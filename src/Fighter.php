@@ -9,6 +9,8 @@ class Fighter
     private int $strength;
     private int $dexterity;
     private string $image;
+    private ?Weapon $weapon;
+    private ?Shield $shield;
 
     private int $life = self::MAX_LIFE;
     
@@ -16,12 +18,17 @@ class Fighter
         string $name,
         int $strength = 10,
         int $dexterity = 5,
-        string $image = 'fighter.svg'
+        string $image = 'fighter.svg',
+        Weapon $weapon = null,
+        Shield $shield = null
+        
     ) {
         $this->name = $name;
         $this->strength = $strength;
         $this->dexterity = $dexterity;
         $this->image = $image;
+        $this->weapon = $weapon;
+        $this->shield = $shield;
     }
 
     /**
@@ -46,7 +53,7 @@ class Fighter
 
     public function fight(Fighter $adversary): void
     {
-        $damage = rand(1, $this->getStrength()) - $adversary->getDexterity();
+        $damage = rand(1, $this->getDamage()) - $adversary->getDefense();
         if ($damage < 0) {
             $damage = 0;
         }
@@ -89,6 +96,37 @@ class Fighter
     {
         return $this->strength;
     }
+    /**
+     * get the value weapon
+     */
+    public function getWeapon()
+    {
+        return $this->weapon;
+    }
+
+     /**
+     * get the value shield
+     */
+    public function getShield()
+    {
+        return $this->shield;
+    }
+
+    /**
+     * Get all damage
+     */
+    public function getDamage()
+    {
+        return $this->getWeapon() ? $this->getStrength() + $this->getWeapon()->getDamage() : $this->getStrength();
+    }
+
+    /**
+     * Get all defense
+     */
+    public function getDefense()
+    {
+        return $this->getShield() ? $this->getDexterity() + $this->getShield()->getProtection() : $this->getDexterity();
+    }
 
 
     /**
@@ -119,6 +157,26 @@ class Fighter
     public function setDexterity($dexterity)
     {
         $this->dexterity = $dexterity;
+
+        return $this;
+    }
+
+    /**
+     * Set a value weapon
+     */
+    public function setWeapon($weapon)
+    {
+        $this->weapon = $weapon;
+
+        return $this;
+    }
+
+    /**
+     * Set a value weapon
+     */
+    public function setShield($shield)
+    {
+        $this->shield = $shield;
 
         return $this;
     }
